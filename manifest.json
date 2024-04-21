@@ -1,0 +1,11 @@
+{
+	"manifest_version": 3,
+	"name": "Night Owl",
+	"version": "1.0",
+	"description": "Save your open tabs as a session and keep better track of your work flow. No more minimizing windows. Store them safely for later.",
+	"permissions": ["tabs", "storage"],
+	"action": {
+		"default_popup": "popup.html",
+		"default_icon": "png.png"
+	}
+}

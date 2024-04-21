@@ -1,0 +1,29 @@
+.dropdown-box{
+    width: 220px;
+    height: 80px;
+}
+
+body {
+    background-color: rgb(49, 43, 43);
+    color: rgb(211, 160, 97);
+    font: 'Monaco';
+    font-size: '16px';
+}
+
+.session-item {
+    padding: 4px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.session-item:hover {
+    color: rgb(234, 213, 48);
+}
+
+.list >*{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin-top: 4px;
+    margin-right: 6px;
+}
