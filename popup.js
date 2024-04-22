@@ -1,13 +1,3 @@
-const retTime = () => {
-    var currentDate = new Date();
-    var year = currentDate.getFullYear();
-    var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
-    var date = ('0' + currentDate.getDate()).slice(-2);
-    var hour = ('0' + currentDate.getHours()).slice(-2);
-    var minute = ('0' + currentDate.getMinutes()).slice(-2);
-    return `${year}-${month}-${date} ${hour}:${minute}`;
-}
-
 document.addEventListener('DOMContentLoaded', function () {
     var btnClick = document.getElementById('btnClick');
     var sessionsList = document.getElementById('sessionsList');
@@ -51,14 +41,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var deleteButton = document.createElement('button');
             deleteButton.textContent = 'Delete';
-            deleteButton.addEventListener('click', function (event) {
-                event.stopPropagation();
 
-                delete savedSessions[sessionName];
-                chrome.storage.local.set({ 'savedSessions': savedSessions }, function () {
-                    renderSessions();
+            (function (sessionName) {
+                deleteButton.addEventListener('click', function (event) {
+                    event.stopPropagation();
+
+                    delete savedSessions[sessionName];
+                    chrome.storage.local.set({ 'savedSessions': savedSessions }, function () {
+                        renderSessions();
+                    });
                 });
-            });
+            })(sessionName);
 
             sessionItemDiv.appendChild(sessionNameDiv);
             sessionItemDiv.appendChild(deleteButton);
