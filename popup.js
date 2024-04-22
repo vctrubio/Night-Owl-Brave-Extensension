@@ -10,6 +10,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    document.getElementById('sessionName').addEventListener('keyup', function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById('btnClick').click();
+        }
+    });
+    
     btnClick.addEventListener('click', function () {
         var sessionName = document.getElementById('sessionName').value.trim();
 
@@ -34,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
         for (var sessionName in savedSessions) {
             var sessionItemDiv = document.createElement('div');
             sessionItemDiv.classList.add('session-item');
+
 
             var sessionNameDiv = document.createElement('div');
             sessionNameDiv.textContent = sessionName;
