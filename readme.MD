@@ -8,9 +8,19 @@
 
 ## Instalation
 
-- Currently not in the dev store... you have to pay 5€ and i can't buy bread atm. 
-
+- Currently earnign 5€ to put it up on the dev store.
 
 ## Resoruces
 
 - <https://www.youtube.com/watch?v=Zt_6UXvoKHM>
+
+## Testing runthrough
+
+Open Chrome → Extensions → Enable "Developer mode" → "Load unpacked" → Select your folder.
+
+## Version 1.1
+
+My goal are simple
+
+- update the ui, top give it more of a developer feel, like me
+- create an key listener, to expand into quick navigtion (v1.2)
