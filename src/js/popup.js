@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
         shortcutKey: document.getElementById('shortcutKey'),
         shortcutName: document.getElementById('shortcutName'),
         shortcutUrl: document.getElementById('shortcutUrl'),
-        saveShortcutButton: document.getElementById('saveShortcutButton')
+        saveShortcutButton: document.getElementById('saveShortcutButton'),
+        shortcutSettingsLink: document.getElementById('shortcutSettingsLink')
     };
     
     let isSettingsVisible = false;
@@ -304,8 +305,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const name = elements.shortcutName.value.trim();
         const url = elements.shortcutUrl.value.trim();
         
-        if (isNaN(key) || name === '' || url === '') {
-            alert('Please fill in all fields');
+        if (isNaN(key) || key < 1 || key > 3 || name === '' || url === '') {
+            alert('Please fill in all fields (key must be 1-3)');
             return;
         }
         
@@ -315,6 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         try {
+            console.log('Saving shortcut:', { key, name, url });
             const shortcuts = await shortcutManager.getShortcuts();
             const existingShortcut = shortcuts.find(s => s.key === key);
             
@@ -326,15 +328,19 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const shortcut = { key, name, url };
             const updatedShortcuts = await shortcutManager.saveShortcut(shortcut);
+            console.log('Shortcut saved successfully. Updated shortcuts:', updatedShortcuts);
+            
+            // Re-render the shortcuts UI
             renderShortcuts(updatedShortcuts);
             updateShortcutKeyOptions(updatedShortcuts);
             
+            // Clear form
             elements.shortcutKey.value = '';
             elements.shortcutName.value = '';
             elements.shortcutUrl.value = '';
         } catch (error) {
             console.error('Error saving shortcut:', error);
-            alert('Failed to save shortcut');
+            alert('Failed to save shortcut: ' + error.message);
         }
     }
     
@@ -362,6 +368,27 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.sessionsList.classList.remove('hidden');
             elements.settingsPanel.classList.add('hidden');
             elements.settingsButton.classList.remove('active');
+        }
+    }
+    
+    // Open browser shortcut settings
+    function openBrowserShortcutSettings() {
+        // Detect browser (if possible)
+        let shortcutSettingsUrl = 'chrome://extensions/shortcuts';
+        
+        // Check if Brave browser (though this might not be reliable)
+        if (navigator.userAgent.indexOf('Brave') !== -1) {
+            shortcutSettingsUrl = 'brave://extensions/shortcuts';
+        }
+        
+        // Try to open the URL (may not work directly due to security restrictions)
+        try {
+            // Create a tab with the settings URL
+            chrome.tabs.create({ url: shortcutSettingsUrl });
+        } catch (error) {
+            console.error('Failed to open settings URL:', error);
+            // Fallback: show instructions to the user
+            alert('To configure shortcuts, go to:\n\nchrome://extensions/shortcuts\n\nor\n\nbrave://extensions/shortcuts');
         }
     }
     
@@ -432,6 +459,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     elements.saveShortcutButton.addEventListener('click', saveShortcutHandler);
+    
+    elements.shortcutSettingsLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        openBrowserShortcutSettings();
+    });
     
     initialize();
 });

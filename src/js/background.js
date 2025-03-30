@@ -3,6 +3,8 @@
  * Handles global keyboard shortcuts regardless of popup state
  */
 
+console.log('Night Owl background script initialized');
+
 // Store shortcuts in memory for quick access
 let cachedShortcuts = [];
 
@@ -24,18 +26,21 @@ chrome.commands.onCommand.addListener(function(command) {
     console.log('Command received:', command);
     
     if (command === '_execute_action') {
-        // This is the command to open the extension popup
         console.log('Opening extension popup');
+        // Chrome handles this automatically, no action needed
     }
-    else if (command.startsWith('open-shortcut-')) {
-        const shortcutKey = parseInt(command.replace('open-shortcut-', ''), 10);
-        openShortcutByKey(shortcutKey);
+    else if (command.startsWith('shortcut-')) {
+        // Extract the key number (1-3) from the command
+        const keyNumber = parseInt(command.replace('shortcut-', ''), 10);
+        if (!isNaN(keyNumber) && keyNumber >= 1 && keyNumber <= 3) {
+            openShortcutByKey(keyNumber);
+        }
     }
 });
 
 /**
  * Open a shortcut by its numeric key
- * @param {number} key - The shortcut key (0-9)
+ * @param {number} key - The shortcut key (1-3)
  */
 function openShortcutByKey(key) {
     console.log('Looking for shortcut with key:', key);
@@ -43,6 +48,8 @@ function openShortcutByKey(key) {
     // Get fresh data from storage to ensure we have the latest
     chrome.storage.local.get(['shortcuts'], function(data) {
         const shortcuts = data.shortcuts || [];
+        console.log('Available shortcuts:', shortcuts);
+        
         const shortcut = shortcuts.find(s => s.key === key);
         
         if (shortcut) {
@@ -58,6 +65,8 @@ function openShortcutByKey(key) {
 chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (namespace === 'local' && changes.shortcuts) {
         console.log('Shortcuts updated in storage, refreshing memory cache');
+        console.log('Old shortcuts:', changes.shortcuts.oldValue);
+        console.log('New shortcuts:', changes.shortcuts.newValue);
         cachedShortcuts = changes.shortcuts.newValue || [];
     }
 });
@@ -74,12 +83,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     
     if (request.action === 'refreshShortcuts') {
         loadShortcutsFromStorage();
+        console.log('Shortcuts reloaded. New shortcuts:', cachedShortcuts);
         sendResponse({ success: true });
         return true;
     }
     
     return false;
 });
-
-// Log when the background script is initialized
-console.log('Night Owl background script initialized');

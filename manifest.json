@@ -3,7 +3,11 @@
 	"name": "Night Owl Tab Manager",
 	"version": "1.0.0",
 	"description": "A tab manager with keyboard shortcuts and theme options",
-	"permissions": ["tabs", "storage"],
+	"permissions": [
+		"tabs",
+		"storage",
+		"commands"
+	],
 	"background": {
 		"service_worker": "src/js/background.js"
 	},
@@ -18,19 +22,22 @@
 			},
 			"description": "Open Night Owl popup"
 		},
-		"open-shortcut-1": {
+		"shortcut-1": {
 			"suggested_key": {
 				"default": "Ctrl+1"
 			},
 			"description": "Open shortcut 1"
 		},
-		"open-shortcut-2": {
+		"shortcut-2": {
 			"suggested_key": {
 				"default": "Ctrl+2"
 			},
 			"description": "Open shortcut 2"
 		},
-		"open-shortcut-3": {
+		"shortcut-3": {
+			"suggested_key": {
+				"default": "Ctrl+3"
+			},
 			"description": "Open shortcut 3"
 		}
 	}
