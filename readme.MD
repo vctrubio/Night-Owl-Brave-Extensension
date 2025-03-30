@@ -23,4 +23,4 @@ Open Chrome → Extensions → Enable "Developer mode" → "Load unpacked" → S
 My goal are simple
 
 - update the ui, top give it more of a developer feel, like me
-- create an key listener, to expand into quick navigtion (v1.2)
+- create an key listener, to expand into quick navigtion 
