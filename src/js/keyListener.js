@@ -1,6 +1,7 @@
 /**
  * Key Listener for Night Owl Extension
- * Handles keyboard shortcuts for quick navigation
+ * Handles keyboard shortcuts for quick navigation when the popup is open
+ * For global shortcuts, see background.js
  */
 
 // Store shortcuts in Chrome storage
@@ -29,20 +30,27 @@ function initKeyListener() {
                         // Prevent default action (like browser shortcut)
                         event.preventDefault();
                         
-                        // Log to console to check if the shortcut is triggered
-                        console.log(`Ctrl+${num} pressed. Opening: ${shortcut.name} (${shortcut.url})`);
+                        // Log to console that we're handling this in popup
+                        console.log(`Popup handling Ctrl+${num}. Opening: ${shortcut.name}`);
 
-                        // Open the URL in a new tab
-                        chrome.tabs.create({ url: shortcut.url });
-                        
-                        // Log usage
-                        console.log(`Opened shortcut ${num}: ${shortcut.name} (${shortcut.url})`);
+                        // Send message to background script to open the URL
+                        chrome.runtime.sendMessage({
+                            action: 'openShortcut',
+                            key: num
+                        }).catch(err => {
+                            // Fallback if background script is not responsive
+                            console.log('Fallback: opening URL directly');
+                            chrome.tabs.create({ url: shortcut.url });
+                        });
                     }
                 }
             }
         });
     });
 }
+
+// Initialize the key listener when the popup is open
+initKeyListener();
 
 /**
  * Get all saved shortcuts
@@ -98,11 +106,6 @@ async function deleteShortcut(key) {
     const updatedShortcuts = shortcuts.filter(s => s.key !== key);
     await saveShortcuts(updatedShortcuts);
     return updatedShortcuts;
-}
-
-// Initialize the key listener when the extension loads
-if (typeof chrome !== 'undefined' && chrome.runtime) {
-    initKeyListener();
 }
 
 // Export functions for use in popup.js

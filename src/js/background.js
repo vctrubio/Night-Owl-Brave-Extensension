@@ -1,6 +1,6 @@
 /**
  * Background script for Night Owl Browser Extension
- * Handles global keyboard shortcuts and background tasks
+ * Handles global keyboard shortcuts regardless of popup state
  */
 
 // Store shortcuts in memory for quick access
@@ -23,7 +23,11 @@ function loadShortcutsFromStorage() {
 chrome.commands.onCommand.addListener(function(command) {
     console.log('Command received:', command);
     
-    if (command.startsWith('open-shortcut-')) {
+    if (command === '_execute_action') {
+        // This is the command to open the extension popup
+        console.log('Opening extension popup');
+    }
+    else if (command.startsWith('open-shortcut-')) {
         const shortcutKey = parseInt(command.replace('open-shortcut-', ''), 10);
         openShortcutByKey(shortcutKey);
     }
@@ -36,14 +40,18 @@ chrome.commands.onCommand.addListener(function(command) {
 function openShortcutByKey(key) {
     console.log('Looking for shortcut with key:', key);
     
-    const shortcut = cachedShortcuts.find(s => s.key === key);
-    
-    if (shortcut) {
-        console.log(`Opening shortcut ${key}: ${shortcut.name} (${shortcut.url})`);
-        chrome.tabs.create({ url: shortcut.url });
-    } else {
-        console.log(`No shortcut found for key ${key}`);
-    }
+    // Get fresh data from storage to ensure we have the latest
+    chrome.storage.local.get(['shortcuts'], function(data) {
+        const shortcuts = data.shortcuts || [];
+        const shortcut = shortcuts.find(s => s.key === key);
+        
+        if (shortcut) {
+            console.log(`Opening shortcut ${key}: ${shortcut.name} (${shortcut.url})`);
+            chrome.tabs.create({ url: shortcut.url });
+        } else {
+            console.log(`No shortcut found for key ${key}`);
+        }
+    });
 }
 
 // Listen for changes to shortcuts in storage
@@ -56,7 +64,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 // Listen for messages from popup
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    console.log('Message received:', request);
+    console.log('Background script received message:', request);
     
     if (request.action === 'openShortcut' && typeof request.key === 'number') {
         openShortcutByKey(request.key);
