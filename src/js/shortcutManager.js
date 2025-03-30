@@ -39,6 +39,13 @@ const shortcutManager = {
         shortcuts.push(shortcut);
         
         await this.saveShortcuts(shortcuts);
+        
+        // Notify background script to refresh shortcuts
+        if (chrome.runtime && chrome.runtime.sendMessage) {
+            chrome.runtime.sendMessage({ action: 'refreshShortcuts' })
+                .catch(err => console.log('Error notifying background script:', err));
+        }
+        
         return shortcuts;
     },
     
@@ -51,6 +58,13 @@ const shortcutManager = {
         const shortcuts = await this.getShortcuts();
         const updatedShortcuts = shortcuts.filter(s => s.key !== key);
         await this.saveShortcuts(updatedShortcuts);
+        
+        // Notify background script to refresh shortcuts
+        if (chrome.runtime && chrome.runtime.sendMessage) {
+            chrome.runtime.sendMessage({ action: 'refreshShortcuts' })
+                .catch(err => console.log('Error notifying background script:', err));
+        }
+        
         return updatedShortcuts;
     }
 };

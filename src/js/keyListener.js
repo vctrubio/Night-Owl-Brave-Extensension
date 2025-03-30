@@ -29,6 +29,9 @@ function initKeyListener() {
                         // Prevent default action (like browser shortcut)
                         event.preventDefault();
                         
+                        // Log to console to check if the shortcut is triggered
+                        console.log(`Ctrl+${num} pressed. Opening: ${shortcut.name} (${shortcut.url})`);
+
                         // Open the URL in a new tab
                         chrome.tabs.create({ url: shortcut.url });
                         
