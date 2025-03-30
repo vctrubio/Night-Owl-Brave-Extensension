@@ -88,7 +88,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Delete';
             deleteButton.title = 'Delete this session';
-            deleteButton.addEventListener('click', () => sessionManager.deleteSession(session.name));
+            deleteButton.addEventListener('click', async () => {
+                await sessionManager.deleteSession(session.name);
+                renderSessionsList(); // Re-render the list after deletion
+            });
             
             controls.appendChild(openButton);
             controls.appendChild(deleteButton);
@@ -109,13 +112,15 @@ document.addEventListener('DOMContentLoaded', function() {
         parent.replaceChild(input, element);
         input.focus();
         
-        const controlsDiv = parent.querySelector('.session-controls');
+        const controlsDiv = parent.parentNode.querySelector('.session-controls');
         const openButton = controlsDiv.querySelector('.open-button');
         
-        const newOpenButton = openButton.cloneNode(true);
-        newOpenButton.textContent = 'Update';
-        newOpenButton.title = 'Update session name';
-        controlsDiv.replaceChild(newOpenButton, openButton);
+        // Create a new button and replace the open button
+        const updateButton = document.createElement('button');
+        updateButton.textContent = 'Update';
+        updateButton.title = 'Update session name';
+        updateButton.className = 'open-button'; // Keep the same class for styling
+        controlsDiv.replaceChild(updateButton, openButton);
         
         function saveEditedName() {
             const newName = input.value.trim();
@@ -125,57 +130,78 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            const nameExists = sessionManager.sessionExists(newName, originalName);
+            // Check if name exists (other than original)
+            const nameExists = sessionManager.sessions.some(s => s.name === newName && s.name !== originalName);
             if (nameExists) {
                 alert('A session with this name already exists.');
                 input.focus();
                 return;
             }
             
-            sessionManager.updateSessionName(originalName, newName)
-                .then(() => {
-                    const updatedElement = document.createElement('div');
-                    updatedElement.className = 'session-name';
-                    updatedElement.textContent = newName;
-                    updatedElement.setAttribute('data-original', newName);
-                    updatedElement.addEventListener('click', function() {
-                        makeSessionNameEditable(updatedElement, newName);
+            // Find the session and update its name
+            const sessionIndex = sessionManager.sessions.findIndex(s => s.name === originalName);
+            if (sessionIndex >= 0) {
+                // Update the session name
+                sessionManager.sessions[sessionIndex].name = newName;
+                
+                // Save to storage and then update the UI
+                chrome.storage.local.set({sessions: sessionManager.sessions}, function() {
+                    // Replace input with text element
+                    const nameElement = document.createElement('div');
+                    nameElement.className = 'session-name';
+                    nameElement.textContent = newName;
+                    nameElement.setAttribute('data-original', newName);
+                    nameElement.addEventListener('click', function() {
+                        makeSessionNameEditable(nameElement, newName);
                     });
                     
-                    parent.replaceChild(updatedElement, input);
+                    parent.replaceChild(nameElement, input);
                     
-                    const finalOpenButton = newOpenButton.cloneNode(false);
-                    finalOpenButton.textContent = 'Open';
-                    finalOpenButton.title = 'Open all tabs in this session';
-                    finalOpenButton.addEventListener('click', () => sessionManager.openSessionByName(newName));
-                    controlsDiv.replaceChild(finalOpenButton, newOpenButton);
+                    // Reset button to open
+                    const openButton = document.createElement('button');
+                    openButton.textContent = 'Open';
+                    openButton.title = 'Open all tabs in this session';
+                    openButton.className = 'open-button';
+                    openButton.addEventListener('click', () => {
+                        const session = sessionManager.sessions.find(s => s.name === newName);
+                        if (session) sessionManager.openSession(session);
+                    });
+                    
+                    controlsDiv.replaceChild(openButton, updateButton);
                 });
+            }
         }
         
         function revertEdit() {
-            const revertElement = document.createElement('div');
-            revertElement.className = 'session-name';
-            revertElement.textContent = originalName;
-            revertElement.setAttribute('data-original', originalName);
-            revertElement.addEventListener('click', function() {
-                makeSessionNameEditable(revertElement, originalName);
+            // Create a new element with the original name
+            const nameElement = document.createElement('div');
+            nameElement.className = 'session-name';
+            nameElement.textContent = originalName;
+            nameElement.setAttribute('data-original', originalName);
+            nameElement.addEventListener('click', function() {
+                makeSessionNameEditable(nameElement, originalName);
             });
             
-            parent.replaceChild(revertElement, input);
+            parent.replaceChild(nameElement, input);
             
-            const originalSession = sessionManager.getSessionByName(originalName);
+            // Reset button to open
+            const openButton = document.createElement('button');
+            openButton.textContent = 'Open';
+            openButton.title = 'Open all tabs in this session';
+            openButton.className = 'open-button';
+            openButton.addEventListener('click', () => {
+                const session = sessionManager.sessions.find(s => s.name === originalName);
+                if (session) sessionManager.openSession(session);
+            });
             
-            const finalOpenButton = newOpenButton.cloneNode(false);
-            finalOpenButton.textContent = 'Open';
-            finalOpenButton.title = 'Open all tabs in this session';
-            finalOpenButton.addEventListener('click', () => sessionManager.openSession(originalSession));
-            controlsDiv.replaceChild(finalOpenButton, newOpenButton);
+            controlsDiv.replaceChild(openButton, updateButton);
         }
         
+        // Set up event handlers for input
         input.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                input.blur();
+                saveEditedName();
             } else if (e.key === 'Escape') {
                 revertEdit();
             }
@@ -188,7 +214,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        newOpenButton.addEventListener('click', saveEditedName);
+        // Make sure the update button calls saveEditedName
+        updateButton.addEventListener('click', saveEditedName);
     }
     
     async function loadShortcuts() {

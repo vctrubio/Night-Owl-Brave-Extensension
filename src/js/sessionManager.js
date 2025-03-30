@@ -86,8 +86,11 @@ const sessionManager = {
      * @returns {Promise<Array>} - Promise resolving to updated sessions array
      */
     deleteSession: async function(sessionName) {
+        if (!sessionName) return this.sessions;
+        
         this.sessions = this.sessions.filter(s => s.name !== sessionName);
         await storageHelper.set({[STORAGE_KEYS.SESSIONS]: this.sessions});
+        
         return this.sessions;
     },
     
@@ -102,6 +105,17 @@ const sessionManager = {
             url: urls,
             focused: true
         });
+    },
+    
+    /**
+     * Open a session by name
+     * @param {string} sessionName - Name of the session to open
+     */
+    openSessionByName: function(sessionName) {
+        const session = this.sessions.find(s => s.name === sessionName);
+        if (session) {
+            this.openSession(session);
+        }
     },
     
     /**
@@ -122,7 +136,9 @@ const sessionManager = {
         const sessionIndex = this.sessions.findIndex(s => s.name === originalName);
         if (sessionIndex < 0) return null;
         
+        // Update session name and lastModified timestamp
         this.sessions[sessionIndex].name = newName;
+        this.sessions[sessionIndex].lastModified = new Date().toISOString(); // Update timestamp
         await storageHelper.set({[STORAGE_KEYS.SESSIONS]: this.sessions});
         
         return this.sessions[sessionIndex];
@@ -135,6 +151,15 @@ const sessionManager = {
      */
     sessionExists: function(name) {
         return this.sessions.some(session => session.name === name);
+    },
+    
+    /**
+     * Get a session by name
+     * @param {string} sessionName - Name of the session to get
+     * @returns {Object|null} - Session object or null if not found
+     */
+    getSessionByName: function(sessionName) {
+        return this.sessions.find(s => s.name === sessionName) || null;
     },
     
     /**
