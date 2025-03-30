@@ -276,6 +276,14 @@ document.addEventListener('DOMContentLoaded', function() {
             shortcutDetails.appendChild(shortcutNameEl);
             shortcutDetails.appendChild(shortcutUrlEl);
             
+            const openButton = document.createElement('button');
+            openButton.className = 'open-shortcut';
+            openButton.innerHTML = '✈'; // Airplane icon
+            openButton.title = 'Open shortcut';
+            openButton.addEventListener('click', () => {
+                chrome.tabs.create({ url: shortcut.url });
+            });
+            
             const deleteButton = document.createElement('button');
             deleteButton.className = 'delete-shortcut';
             deleteButton.innerHTML = '×';
@@ -284,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             shortcutItem.appendChild(keyBadge);
             shortcutItem.appendChild(shortcutDetails);
+            shortcutItem.appendChild(openButton);
             shortcutItem.appendChild(deleteButton);
             
             elements.shortcutsList.appendChild(shortcutItem);
