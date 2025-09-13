@@ -72,8 +72,20 @@ Built with vanilla JavaScript, HTML, and CSS. Clean, modular architecture with:
 
 ## 🔧 Made By
 
+<img src="assets/dd.png" alt="DonkeyDrills Logo" width="100" align="left" style="margin-right: 20px;">
+
 **[donkeydrills.com](https://donkeydrills.com)** - Software Development Solutions  
 *Transitioning from Web2 to Web3*
+
+## 📞 Contact & Repository
+
+- **GitHub**: [https://github.com/vctrubio/Night-Owl-Brave-Extensension](https://github.com/vctrubio/Night-Owl-Brave-Extensension)
+- **Email**: vctrubio@gmail.com
+- **Issues**: Report bugs or request features on GitHub
+
+## 🤝 Contributing
+
+Feel free to open issues, submit PRs, or suggest improvements on the GitHub repository.
 
 ---
 
