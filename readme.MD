@@ -1,6 +1,6 @@
 # 🦉 Night Owl Tab Manager
 
-A clean and efficient browser extension for managing tab sessions with a developer-focused interface.
+Easy session management - no more late night tabs
 
 ## ✨ Features
 

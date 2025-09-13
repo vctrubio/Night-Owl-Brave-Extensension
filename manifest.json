@@ -2,7 +2,7 @@
 	"manifest_version": 3,
 	"name": "Night Owl Tab Manager",
 	"version": "1.1.0",
-	"description": "Save, organize, and restore tab sessions with export functionality. Perfect for developers and researchers managing multiple tabs.",
+	"description": "Easy session management - no more late night tabs",
 	"author": "DonkeyDrills Software Development Solutions",
 	"homepage_url": "https://github.com/vctrubio/Night-Owl-Brave-Extensension",
 	"permissions": [

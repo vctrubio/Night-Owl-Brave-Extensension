@@ -52,7 +52,7 @@ Visit: https://chrome.google.com/webstore/devconsole
 **Name:** Night Owl Tab Manager
 
 **Summary (132 chars max):**
-Save, organize, and restore tab sessions with export functionality. Perfect for developers managing multiple tabs.
+Easy session management - no more late night tabs
 
 **Category:** Productivity
 

@@ -10,12 +10,12 @@
 ## Store Description
 
 ### Summary (132 character limit)
-Save, organize, and restore tab sessions with export functionality. Perfect for developers managing multiple tabs.
+Easy session management - no more late night tabs
 
 ### Detailed Description
-**🦉 Night Owl Tab Manager - The Developer's Tab Organization Solution**
+**🦉 Night Owl Tab Manager**
 
-Stop losing track of your research! Night Owl Tab Manager helps developers, researchers, and heavy tab users organize their browsing workflow with powerful session management.
+Easy session management - no more late night tabs
 
 **✨ Key Features:**
 • **Save Sessions**: Capture all your current tabs into named sessions
