@@ -6,8 +6,7 @@
 const STORAGE_KEYS = {
     SESSIONS: 'sessions',
     SORT_PREFERENCE: 'sortPreference',
-    THEME: 'theme',
-    SHORTCUTS: 'shortcuts'
+    THEME: 'theme'
 };
 
 /**

@@ -18,7 +18,7 @@
 <body>
     <div class="dropdown-box">
         <div class="input-container">
-            <input type="text" id="sessionName" name="sessionName" placeholder="Session Name">
+            <input type="text" id="sessionName" name="sessionName" placeholder="👨🏿‍💻 Session Name">
             <button id="saveButton" title="Save current tabs">Save</button>
             <button id="settingsButton" class="icon-button" title="Settings">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -65,43 +65,21 @@
                     </div>
                 </div>
                 <div class="setting-group">
-                    <h4>Keyboard Shortcuts</h4>
+                    <h4>Export Sessions</h4>
                     <p class="setting-description">
-                    <div>
-                        Ctrl + id, for quick navigation.
-
-                    </div>
-                    <a href="#" id="shortcutSettingsLink" class="settings-link">Configure in browser settings to
-                        work in the background</a>
+                        Export all your saved sessions as a JSON file for backup or sharing.
                     </p>
-                    <div id="shortcutsList" class="shortcuts-list">
-                        <!-- Shortcuts will be populated here -->
-                    </div>
-                    <div class="shortcut-form">
-                        <div class="form-row">
-                            <select id="shortcutKey" class="shortcut-select">
-                                <option value="" disabled selected>Key</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
-                            <input type="text" id="shortcutName" placeholder="Name" class="shortcut-input">
-                        </div>
-                        <div class="form-row">
-                            <input type="text" id="shortcutUrl" placeholder="URL (https://...)"
-                                class="shortcut-input url-input">
-                            <button id="saveShortcutButton" class="small-button">Add</button>
-                        </div>
-                    </div>
+                    <button id="exportButton" class="export-button" title="Export sessions to JSON file">
+                        📁 Export Sessions
+                    </button>
                 </div>
             </div>
         </div>
     </div>
     <script src="../js/utils.js"></script>
     <script src="../js/sessionManager.js"></script>
-    <script src="../js/shortcutManager.js"></script>
     <script src="../js/themeManager.js"></script>
-    <script src="../js/keyListener.js"></script>
+    <script src="../js/exportManager.js"></script>
     <script src="../js/popup.js"></script>
 </body>
 
